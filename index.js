@@ -73,7 +73,7 @@ bot.on('message', (msg) => {
       } else {
         answeredRight = false;
         console.log('yanlis cevap');
-        bot.sendMessage(chatId, "Yanlış Cevap  " + msg.from.first_name);
+        // bot.sendMessage(chatId, "Yanlış Cevap  " + msg.from.first_name);
 
         hintCount++;
 
