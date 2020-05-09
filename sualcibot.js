@@ -16,11 +16,32 @@ console.log('TelegramBot server started in the ' + process.env.NODE_ENV + ' mode
 
 try {
   let leaders = {};
-  var fs = require("fs");
   console.log("\n *STARTING* \n");
-  var contents = fs.readFileSync("sorban.json");
-  var jsonContent = JSON.parse(contents);
+  var jsonContent = "";
 
+  // var fs = require("fs");
+  // var contents = fs.readFileSync("sorban.json");
+  // jsonContent = JSON.parse(contents);
+
+  //from web source
+
+  const http = require('https');
+
+  let req = http.get(process.env.SORBAN, function (res) {
+    let data = '';
+
+    res.on('data', function (stream) {
+      data += stream;
+    });
+    res.on('end', function () {
+      jsonContent = JSON.parse(data);
+    });
+  });
+
+  req.on('error', function (e) {
+    console.log(e.message);
+  });
+  //-------------------------------
   let systemOnOff = "Off";
   bot.onText(/\/sualci (.+)/, (msg, match) => {
 
