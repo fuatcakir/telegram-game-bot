@@ -1,0 +1,3 @@
+node_modules/*
+# Heroku environment configuration
+.env

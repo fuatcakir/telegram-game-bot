@@ -9,6 +9,7 @@
   "author": "Fuat CAKIR",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "node-telegram-bot-api": "^0.40.0"
   },
   "engines": {

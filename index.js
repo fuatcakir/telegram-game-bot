@@ -1,13 +1,20 @@
-const TelegramBot = require('node-telegram-bot-api');
+require('dotenv').config();
+const token = process.env.TOKEN;
 
-const token = '1124541868:AAHBjkJMrAvCqC22wX-D7KpOGFtAKwj5i6Y';
+const TelegramBot = require('node-telegram-bot-api');
+let bot;
+
+if (process.env.NODE_ENV === 'production') {
+  bot = new TelegramBot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
+}
+else {
+  bot = new TelegramBot(token, { polling: true });
+}
+
+console.log('TelegramBot server started in the ' + process.env.NODE_ENV + ' mode');
 
 try {
-
-
-  const bot = new TelegramBot(token, { polling: true });
-
-
   let leaders = {};
   var fs = require("fs");
   console.log("\n *STARTING* \n");
