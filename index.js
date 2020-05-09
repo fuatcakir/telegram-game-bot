@@ -1,4 +1,4 @@
 require("dotenv").config();
 
-var sualcibot = require('./sualcibot');
-require('./web')(sualcibot);
+var bot = require('./sualcibot');
+require('./web')(bot);

@@ -1,14 +1,15 @@
+require('dotenv').config();
 const token = process.env.TOKEN;
 
 const TelegramBot = require('node-telegram-bot-api');
-let sualcibot;
+let bot;
 
 if (process.env.NODE_ENV === 'production') {
-    sualcibot = new TelegramBot(token);
-    sualcibot.setWebHook(process.env.HEROKU_URL + bot.token);
+  bot = new TelegramBot(token);
+  bot.setWebHook(process.env.HEROKU_URL + bot.token);
 }
 else {
-    sualcibot = new TelegramBot(token, { polling: true });
+  bot = new TelegramBot(token, { polling: true });
 }
 
 console.log('TelegramBot server started in the ' + process.env.NODE_ENV + ' mode');
@@ -21,7 +22,7 @@ try {
   var jsonContent = JSON.parse(contents);
 
   let systemOnOff = "Off";
-  sualcibot.onText(/\/sualci (.+)/, (msg, match) => {
+  bot.onText(/\/sualci (.+)/, (msg, match) => {
 
     console.log('object :>> ', jsonContent[2]['q']);
     const chatId = msg.chat.id;
@@ -32,9 +33,9 @@ try {
     } else if (resp == 'stop') {
       systemOnOff = "Off";
     } else if (resp == 'board') {
-        sualcibot.sendMessage(msg.chat.id, "Puanlar:  " + JSON.stringify(leaders));
+      bot.sendMessage(msg.chat.id, "Puanlar:  " + JSON.stringify(leaders));
     } else if (resp == 'info') {
-        sualcibot.sendMessage(msg.chat.id, "mailto : fuat.cakir@outlook.com");
+      bot.sendMessage(msg.chat.id, "mailto : fuat.cakir@outlook.com");
     }
 
   });
@@ -46,7 +47,7 @@ try {
   let answerLength = 1;
   let hintCount = 0;
 
-  sualcibot.on('message', (msg) => {
+  bot.on('message', (msg) => {
     console.log('msg income ', msg);
     if (systemOnOff == "On" && !(msg.text.toString().includes('board') || msg.text.toString().includes('info'))) {
 
@@ -58,7 +59,7 @@ try {
         if (isAnswerRight(question['a'], msg.text.toString())) {
           console.log('DOGRU');
           answeredRight = true;
-          sualcibot.sendMessage(msg.chat.id, "Doğru Cevap  " + msg.from.first_name);
+          bot.sendMessage(msg.chat.id, "Doğru Cevap  " + msg.from.first_name);
           if (leaders[msg.from.first_name]) {
             leaders[msg.from.first_name] = leaders[msg.from.first_name] + 1;
           } else {
@@ -77,12 +78,12 @@ try {
               question = jsonContent[askedSeqNo];
             }
           }
-          sualcibot.sendMessage(chatId, "Soru : " + question['q'] + " ?");
+          bot.sendMessage(chatId, "Soru : " + question['q'] + " ?");
           hintCount = 0;
         } else {
           answeredRight = false;
           console.log('yanlis cevap');
-          // sualcibot.sendMessage(chatId, "Yanlış Cevap  " + msg.from.first_name);
+          // bot.sendMessage(chatId, "Yanlış Cevap  " + msg.from.first_name);
 
           hintCount++;
 
@@ -90,7 +91,7 @@ try {
             let hintindx = hintCount / 2;
             if (question['a'].slice(0, hintindx) == question['a']) {
               answeredRight = true;
-              sualcibot.sendMessage(chatId, "Doğru  Cevap : " + question['a'].toLowerCase());
+              bot.sendMessage(chatId, "Doğru  Cevap : " + question['a'].toLowerCase());
 
               console.log('soru geliyor');
               while (true) {
@@ -104,14 +105,14 @@ try {
                 }
               }
 
-              sualcibot.sendMessage(chatId, "Soru : " + question['q'] + " ?");
+              bot.sendMessage(chatId, "Soru : " + question['q'] + " ?");
               hintCount = 0;
 
             } else {
               console.log('ipucu veriliyor ');
               answeredRight = false;
               answerLength = question['a'].length + 1;
-              sualcibot.sendMessage(chatId, "ipucu : " + question['a'].substr(0, hintindx).padEnd(question['a'].length, "*"));
+              bot.sendMessage(chatId, "ipucu : " + question['a'].substr(0, hintindx).padEnd(question['a'].length, "*"));
             }
           }
 
@@ -128,7 +129,7 @@ try {
             question = jsonContent[askedSeqNo];
           }
         }
-        sualcibot.sendMessage(chatId, "Soru : " + question['q']);
+        bot.sendMessage(chatId, "Soru : " + question['q']);
       }
     }
   });
@@ -166,4 +167,4 @@ function Cevir(text) {
 
 }
 
-module.exports = sualcibot;
+module.exports = bot;
