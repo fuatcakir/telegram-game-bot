@@ -20,32 +20,25 @@ try {
   var jsonContent = "";
 
   // var fs = require("fs");
-  // var contents = fs.readFileSync("sorban.json");
+  // var contents = fs.readFileSync(process.env.SORBAN);
   // jsonContent = JSON.parse(contents);
 
   //from web source
+  const fetch = require('node-fetch');
 
-  const http = require('https');
+  let url = process.env.SORBAN;
 
-  let req = http.get(process.env.SORBAN, function (res) {
-    let data = '';
+  let settings = { method: "Get" };
 
-    res.on('data', function (stream) {
-      data += stream;
+  fetch(url, settings)
+    .then(res => res.json())
+    .then((json) => {
+      jsonContent = json;
     });
-    res.on('end', function () {
-      jsonContent = JSON.parse(data);
-    });
-  });
-
-  req.on('error', function (e) {
-    console.log(e.message);
-  });
   //-------------------------------
   let systemOnOff = "Off";
   bot.onText(/\/sualci (.+)/, (msg, match) => {
 
-    console.log('object :>> ', jsonContent[2]['q']);
     const chatId = msg.chat.id;
     const resp = match[1];
 
